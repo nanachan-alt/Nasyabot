@@ -1,0 +1,1 @@
+console.log("Service worker aktif — Nasyabot siap offline!");
