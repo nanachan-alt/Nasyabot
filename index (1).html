@@ -1,0 +1,143 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nasyabot</title>
+  <link rel="manifest" href="manifest.json" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background-color: #ffe6f0;
+      color: #333;
+      padding: 20px;
+    }
+    header {
+      text-align: center;
+      padding: 10px;
+    }
+    h1 {
+      color: #e91e63;
+    }
+    section {
+      background: white;
+      border-radius: 16px;
+      padding: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #e91e63;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #d81b60;
+    }
+    .entry {
+      padding: 5px 0;
+      border-bottom: 1px dashed #ccc;
+    }
+    .chat {
+      margin-top: 10px;
+    }
+    .bot {
+      background: #fce4ec;
+      padding: 8px;
+      border-radius: 8px;
+      margin-bottom: 5px;
+    }
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      margin-top: 40px;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🌸 Nasyabot</h1>
+    <p>Asisten pencatat usaha cokelatmu!</p>
+  </header>
+
+  <section>
+    <h2>📋 Catat Penjualan</h2>
+    <input type="text" id="barang" placeholder="Nama barang">
+    <input type="number" id="harga" placeholder="Harga satuan (Rp)">
+    <input type="number" id="jumlah" placeholder="Jumlah">
+    <button onclick="simpanData()">Simpan Data</button>
+    <div id="dataList"></div>
+  </section>
+
+  <section>
+    <h2>🤖 Nasyabot Chat</h2>
+    <div id="chatArea">
+      <div class="bot">Halo Kak Nasya! Ada yang bisa aku bantu? 🍫</div>
+    </div>
+    <input type="text" id="userInput" placeholder="Ketik sesuatu...">
+    <button onclick="kirimPesan()">Kirim</button>
+  </section>
+
+  <div class="footer">Made with ❤️ by Nasya</div>
+
+  <script>
+    const dataList = document.getElementById("dataList");
+
+    function simpanData() {
+      const barang = document.getElementById("barang").value;
+      const harga = parseInt(document.getElementById("harga").value);
+      const jumlah = parseInt(document.getElementById("jumlah").value);
+
+      if (!barang || isNaN(harga) || isNaN(jumlah)) {
+        alert("Isi semua kolom dulu ya!");
+        return;
+      }
+
+      const entry = { barang, harga, jumlah };
+      let data = JSON.parse(localStorage.getItem("penjualan")) || [];
+      data.push(entry);
+      localStorage.setItem("penjualan", JSON.stringify(data));
+      tampilkanData();
+    }
+
+    function tampilkanData() {
+      let data = JSON.parse(localStorage.getItem("penjualan")) || [];
+      dataList.innerHTML = data.map(d =>
+        `<div class="entry">- ${d.barang} (Rp ${d.harga} x ${d.jumlah})</div>`
+      ).join("");
+    }
+
+    function kirimPesan() {
+      const input = document.getElementById("userInput").value;
+      if (!input) return;
+
+      const chatArea = document.getElementById("chatArea");
+      chatArea.innerHTML += `<div class="bot">🤔 ${responBot(input)}</div>`;
+      document.getElementById("userInput").value = "";
+    }
+
+    function responBot(msg) {
+      const teks = msg.toLowerCase();
+      if (teks.includes("halo") || teks.includes("hai")) return "Hai juga Kak Nasya! 🌸";
+      if (teks.includes("siapa kamu")) return "Aku Nasyabot, asisten manismu~ 🍫";
+      if (teks.includes("terima kasih")) return "Sama-sama, semangat jualan ya!";
+      return "Aku belum paham, tapi aku belajar terus 💖";
+    }
+
+    // tampilkan data di awal
+    tampilkanData();
+  </script>
+</body>
+</html>
